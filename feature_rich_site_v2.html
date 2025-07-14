@@ -1,0 +1,148 @@
+<!DOCTYPE html><html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Радужный Чат</title>
+  <style>
+    body {
+      background-color: #fff8dc;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 50px;
+    }
+    h1 span {
+      display: inline-block;
+      animation: rainbow 5s linear infinite;
+    }
+    @keyframes rainbow {
+      0% { color: red; }
+      16% { color: orange; }
+      32% { color: yellow; }
+      48% { color: green; }
+      64% { color: blue; }
+      80% { color: indigo; }
+      100% { color: violet; }
+    }
+    #chat {
+      margin-top: 30px;
+      min-height: 100px;
+      font-size: 20px;
+    }
+    button {
+      background: linear-gradient(45deg, red, orange, yellow, green, blue, indigo, violet);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    .hidden {
+      display: none;
+    }
+    .fade {
+      animation: fadeIn 2s forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .typing {
+      border-right: .1em solid black;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <h1>
+    <span>П</span><span>р</span><span>и</span><span>в</span><span>е</span><span>т</span><span>!</span>
+  </h1>
+  <div id="chat"></div>
+  <button id="startBtn">Начать</button>
+  <script>
+    const chat = document.getElementById('chat');
+    const startBtn = document.getElementById('startBtn');function typeText(text, speed = 100) { // медленнее
+  return new Promise((resolve) => {
+    let i = 0;
+    const span = document.createElement('div');
+    span.classList.add('typing');
+    chat.appendChild(span);
+    function typing() {
+      if (i < text.length) {
+        span.textContent += text.charAt(i);
+        i++;
+        setTimeout(typing, speed);
+      } else {
+        span.classList.remove('typing');
+        span.classList.add('fade');
+        resolve();
+      }
+    }
+    typing();
+  });
+}
+
+function clearChat() {
+  chat.innerHTML = '';
+}
+
+startBtn.addEventListener('click', async () => {
+  startBtn.classList.add('hidden');
+  clearChat();
+  await typeText('Я думаю!');
+  await new Promise(res => setTimeout(res, 5000)); // Пауза 5 секунд
+  await typeText('Я подумала!');
+  setTimeout(() => {
+    typeText('О том, что у меня сломан робот :(');
+  }, 5000);
+  setTimeout(() => {
+    clearChat();
+    typeText('Кстати, ты крутой(ая)!').then(() => {
+      const btn1 = document.createElement('button');
+      btn1.textContent = 'Ура!';
+      const btn2 = document.createElement('button');
+      btn2.textContent = 'Ты тоже!';
+      const btn3 = document.createElement('button');
+      btn3.textContent = 'Иди нафиг';
+
+      chat.appendChild(btn1);
+      chat.appendChild(btn2);
+      chat.appendChild(btn3);
+
+      btn1.addEventListener('click', () => {
+        clearChat();
+        typeText('Я тоже рада, на этом я закончу, пока!');
+        endSequence();
+      });
+      btn2.addEventListener('click', () => {
+        clearChat();
+        typeText(':)');
+        endSequence();
+      });
+      btn3.addEventListener('click', () => {
+        clearChat();
+        typeText(':(');
+        endSequence();
+      });
+    });
+  }, 12000);
+});
+
+function endSequence() {
+  setTimeout(() => {
+    const endMsg = document.createElement('div');
+    endMsg.textContent = 'Диалог закончен';
+    endMsg.classList.add('fade');
+    const restartBtn = document.createElement('button');
+    restartBtn.textContent = 'Начать снова';
+    restartBtn.addEventListener('click', () => {
+      location.reload();
+    });
+    chat.appendChild(endMsg);
+    chat.appendChild(restartBtn);
+  }, 10000);
+}
+
+  </script>
+</body>
+</html>
